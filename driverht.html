@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صفحة السائق</title>
+    <link rel="stylesheet" href="css.css"> <!-- ربط ملف CSS -->
+	<script type="module" src="driver.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+    <style>
+        #map {
+            height: 600px; /* ارتفاع الخريطة */
+            width: 100%;
+        }
+     
+	 .ride-list {
+    position: fixed;
+    top: 10vh;            /* المسافة من أعلى الصفحة بنسبة 10% */
+    left: 1%;             /* المسافة من الجانب الأيسر */
+    right: 5%;            /* المسافة من الجانب الأيمن */
+    bottom: 20vh;         /* المسافة من أسفل الصفحة بنسبة 10% */
+    height: auto;         /* اجعل الارتفاع تلقائي بناءً على المحتوى */
+    width: 25%;           /* عرض القائمة مع مساحة صغيرة من الجانبين */
+    background-color: rgba(0, 0, 0, 0.5);  /* خلفية شبه شفافة */
+    overflow-y: auto;     /* للسماح بالتمرير إذا تجاوز المحتوى الارتفاع المحدد */
+    z-index: 1000;        /* لضمان ظهورها فوق الخريطة أو العناصر الأخرى */
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+	 
+        .ride-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+			    direction: rtl; /* يعكس اتجاه النص من اليمين لليسار */
+              margin-bottom: 5px; /* تقليل المسافة بين العناصر */
+        }
+		.ride-details p {
+    margin: 3px 0; /* تقليل المسافة بين السطور */
+    line-height: 1.4; /* تقليل التباعد بين الأسطر */
+}
+
+
+        #confirmArrival {
+            display: none; /* إخفاء زر تأكيد الوصول في البداية */
+            margin-top: 10px;
+        }
+        #collectPayment {
+            display: none; /* إخفاء زر تحصيل النقود في البداية */
+            margin-top: 10px;
+        }
+		.message-box {
+
+            position: fixed;
+
+            top: 50%;
+
+            left: 50%;
+
+            transform: translate(-50%, -50%);
+
+            padding: 20px;
+
+            background-color: #FFD700;
+           font-size: 35x; /* حجم النص داخل الرسالة (يمكن تغييره حسب الحاجة) */
+
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+            z-index: 1000;
+        }
+
+  <!-- إضافة بعض التنسيقات الاحترافية -->
+    body {
+    position: relative;
+      font-family: Arial, sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+      direction: rtl;
+    }
+
+	
+	
+    </style>
+</head>
+
+<body>
+    <h1>صفحة السائق</h1>
+    <div id="map"></div>
+    <div class="ride-list" id="ridesList">
+        <!-- قائمة المشاوير ستظهر هنا -->
+    </div>
+    <script type="module" src="driver.js"></script> <!-- ربط بملف JavaScript -->
+     <audio id="cancelSound" src="cancel_sound.mp3"></audio>
+     <button id="profileBtn">البروفايل</button>
+	     <button id="logoutBtn">LOGOUT</button>
+    <button id="confirmArrival" onclick="confirmArrival()">تأكيد الوصول</button>
+    <button id="collectPayment" onclick="collectPayment()">تحصيل النقود</button>
+	<button id="startRide" onclick="startRide()">بدء الرحله</button>
+<button id="cancelRide" style="display: none;">إلغاء الرحلة</button>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+    <script type="module" src="driver.js"></script> <!-- ربط بملف JavaScript -->
+</body>
+</html>
