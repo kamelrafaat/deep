@@ -1,79 +1,16 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>صفحة السائق</title>
-    <link rel="stylesheet" href="css.css"> <!-- ربط ملف CSS -->
-	<script type="module" src="driver.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
-    <style>
-        #map {
-            height: 600px; /* ارتفاع الخريطة */
-            width: 100%;
-        }
-     
-	 .ride-list {
-    position: fixed;
-    top: 10vh;            /* المسافة من أعلى الصفحة بنسبة 10% */
-    left: 1%;             /* المسافة من الجانب الأيسر */
-    right: 5%;            /* المسافة من الجانب الأيمن */
-    bottom: 20vh;         /* المسافة من أسفل الصفحة بنسبة 10% */
-    height: auto;         /* اجعل الارتفاع تلقائي بناءً على المحتوى */
-    width: 25%;           /* عرض القائمة مع مساحة صغيرة من الجانبين */
-    background-color: rgba(0, 0, 0, 0.5);  /* خلفية شبه شفافة */
-    overflow-y: auto;     /* للسماح بالتمرير إذا تجاوز المحتوى الارتفاع المحدد */
-    z-index: 1000;        /* لضمان ظهورها فوق الخريطة أو العناصر الأخرى */
-    padding: 10px;
-    box-sizing: border-box;
-}
-
-	 
-        .ride-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-			    direction: rtl; /* يعكس اتجاه النص من اليمين لليسار */
-              margin-bottom: 5px; /* تقليل المسافة بين العناصر */
-        }
-		.ride-details p {
-    margin: 3px 0; /* تقليل المسافة بين السطور */
-    line-height: 1.4; /* تقليل التباعد بين الأسطر */
-}
-
-
-        #confirmArrival {
-            display: none; /* إخفاء زر تأكيد الوصول في البداية */
-            margin-top: 10px;
-        }
-        #collectPayment {
-            display: none; /* إخفاء زر تحصيل النقود في البداية */
-            margin-top: 10px;
-        }
-		.message-box {
-
-            position: fixed;
-
-            top: 50%;
-
-            left: 50%;
-
-            transform: translate(-50%, -50%);
-
-            padding: 20px;
-
-            background-color: #FFD700;
-           font-size: 35x; /* حجم النص داخل الرسالة (يمكن تغييره حسب الحاجة) */
-
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-
-            z-index: 1000;
-        }
-
-  <!-- إضافة بعض التنسيقات الاحترافية -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>صفحة السائق</title>
+  <link rel="stylesheet" href="css.css"> <!-- ربط ملف CSS الخارجي -->
+  <script type="module" src="driver.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.css" />
+  <style>
+    /* بعض التنسيقات الأساسية */
     body {
-    position: relative;
       font-family: Arial, sans-serif;
       background: #fff;
       margin: 0;
@@ -81,27 +18,314 @@
       direction: rtl;
     }
 
-	
-	
-    </style>
+    h1 {
+      text-align: center;
+      margin: 10px 0;
+      color: #FFFF00;
+    }
+
+    #map {
+      height: 400px;
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    /* قائمة الرحلات - نسق إفتراضي لأجهزة سطح المكتب */
+    .ride-list {
+      position: fixed;
+      top: 10vh;
+      left: 1%;
+      right: 5%;
+      bottom: 20vh;
+      background-color: rgba(0, 0, 0, 0.5);
+      overflow-y: auto;
+      z-index: 1000;
+      padding: 10px;
+      box-sizing: border-box;
+      width: 25%;
+    }
+
+    .ride-item {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      margin-bottom: 5px;
+      direction: rtl;
+      color: #FFFF00;
+    }
+
+    .ride-details p {
+      margin: 3px 0;
+      line-height: 1.4;
+    }
+
+    /* أزرار التطبيق */
+    button {
+      padding: 15px 30px;
+      cursor: pointer;
+      margin-top: 20px;
+      border: none;
+      border-radius: 5px;
+      color: #000;
+      background-color: #2980b9;
+      transition: background-color 0.3s;
+      display: block;
+      margin: 20px auto; /* توسيط الأزرار في العرض الافتراضي */
+    }
+
+    button:hover {
+      background-color: #FFFF00;
+    }
+
+    #confirmArrival,
+    #collectPayment {
+      display: none;
+    }
+
+    .message-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: #FFD700;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    /* أزرار الرأس */
+    #header {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      display: flex;
+      gap: 10px;
+      z-index: 1000;
+    }
+
+    #profileBtn,
+    #logoutBtn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #profileBtn {
+      background: #007BFF;
+      color: white;
+    }
+
+    #logoutBtn {
+      background: red;
+      color: white;
+    }
+
+    #logoutBtn:hover {
+      background: darkred;
+    }
+
+    /* بعض التنسيقات الأخرى */
+    #clientInfo {
+      background-color: #000;
+      color: white;
+      padding: 30px;
+      border-radius: 8px;
+      width: 20%;
+    }
+
+    /* التنسيقات الخاصة بصفحات البروفايل والنماذج */
+    .container {
+      width: 90%;
+      max-width: 500px;
+      margin: 20px auto;
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #fff;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #fff;
+    }
+
+    .form-group input[type="text"],
+    .form-group input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .form-group input[readonly] {
+      background: #eee;
+    }
+
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .button-group button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      border: none;
+      border-radius: 4px;
+      background: #007BFF;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .button-group button:hover {
+      background: #0056b3;
+    }
+
+    /* تنسيق زر البروفايل الثابت */
+    .profileBtn {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      padding: 10px 20px;
+      background: #007BFF;
+      border: none;
+      border-radius: 4px;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      z-index: 99999;
+    }
+
+    /* تنسيقات إضافية */
+    #combinedInfo {
+      background-color: rgba(0, 0, 0, 0.6);
+      color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      width: 100%;
+      margin: 20px auto;
+      box-sizing: border-box;
+    }
+
+    #combinedInfo img {
+      max-width: 150px;
+      max-height: 300px;
+      object-fit: cover;
+      margin: 10px 0;
+    }
+
+    #combinedInfo .info-text {
+      font-size: 14px;
+      line-height: 1.4;
+      margin: 5px 0;
+    }
+
+    #closeProfile,
+    #editProfile {
+      padding: 20px 40px;
+      cursor: pointer;
+      margin-top: 40px;
+      border: none;
+      border-radius: 5px;
+    }
+
+    /* =====================================
+       Media Queries لتعديل التنسيق على الشاشات الصغيرة
+       ===================================== */
+    @media (max-width: 768px) {
+      /* تقليل الهوامش والحشوات للهواتف */
+      body {
+        padding: 10px;
+      }
+      
+      h1 {
+        font-size: 1.5em;
+        margin: 10px 0;
+      }
+      
+      #map {
+        height: 300px;
+      }
+      
+      /* تعديل قائمة الرحلات لتملأ الشاشة */
+      .ride-list {
+        position: static;
+        width: 100%;
+        height: auto;
+        margin-bottom: 20px;
+      }
+      
+      .ride-item {
+        padding: 10px;
+        font-size: 14px;
+      }
+      
+      /* تكبير الأزرار لتناسب اللمس */
+      button {
+        padding: 12px 20px;
+        font-size: 16px;
+        margin-top: 15px;
+      }
+      
+      /* زر البروفايل وأزرار الرأس */
+      #profileBtn, #logoutBtn {
+        font-size: 14px;
+        padding: 8px 16px;
+      }
+      
+      /* تقليل حجم عناصر نموذج البروفايل */
+      .container {
+        padding: 15px;
+      }
+      
+      /* إذا كانت هناك عناصر ذات حجم ثابت مثل #clientInfo */
+      #clientInfo {
+        width: 90%;
+        margin: 0 auto;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <h1>صفحة السائق</h1>
-    <div id="map"></div>
-    <div class="ride-list" id="ridesList">
-        <!-- قائمة المشاوير ستظهر هنا -->
-    </div>
-    <script type="module" src="driver.js"></script> <!-- ربط بملف JavaScript -->
-     <audio id="cancelSound" src="cancel_sound.mp3"></audio>
-     <button id="profileBtn">البروفايل</button>
-	     <button id="logoutBtn">LOGOUT</button>
-    <button id="confirmArrival" onclick="confirmArrival()">تأكيد الوصول</button>
-    <button id="collectPayment" onclick="collectPayment()">تحصيل النقود</button>
-	<button id="startRide" onclick="startRide()">بدء الرحله</button>
-<button id="cancelRide" style="display: none;">إلغاء الرحلة</button>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
-    <script type="module" src="driver.js"></script> <!-- ربط بملف JavaScript -->
+  <!-- رأس الصفحة -->
+  <div id="header">
+    <button id="profileBtn">البروفايل</button>
+    <button id="logoutBtn">LOGOUT</button>
+  </div>
+
+  <h1>صفحة السائق</h1>
+  <div id="map"></div>
+  <div class="ride-list" id="ridesList">
+    <!-- قائمة المشاوير ستظهر هنا -->
+  </div>
+
+  <!-- أزرار التحكم في الرحلة -->
+  <button id="confirmArrival" onclick="confirmArrival()">تأكيد الوصول</button>
+  <button id="collectPayment" onclick="collectPayment()">تحصيل النقود</button>
+  <button id="startRide" onclick="startRide()">بدء الرحلة</button>
+  <button id="cancelRide" style="display: none;">إلغاء الرحلة</button>
+
+  <audio id="cancelSound" src="cancel_sound.mp3"></audio>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-routing-machine/dist/leaflet-routing-machine.js"></script>
+  <script type="module" src="driver.js"></script>
 </body>
 </html>
