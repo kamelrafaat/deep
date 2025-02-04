@@ -440,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (ride.status === 'canceled' && ride.driverId === driverId) {
                     alert('لقد تم إلغاء الرحلة من قبل العميل!');
                     const rideRef = ref(database, `rides/${rideId}`);
-                       playStatusSound('sounds/بدء.mp3');
+                       playStatusSound('الغاء.mp3');
                         console.error("تعذر تشغيل الصوت:", error);
                     };   
  setTimeout(() => {
