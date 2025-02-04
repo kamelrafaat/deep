@@ -79,7 +79,7 @@ document.getElementById('profileBtn').addEventListener('click', () => {
   showDriverProfile();
 });
     async function showDriverProfile() {
-document.body.style.backgroundImage = "url('image/images.jpg')";
+document.body.style.backgroundImage = "url('images.jpg')";
       // إخفاء العناصر الأخرى
       document.getElementById('map').style.display = 'none';
       document.getElementById('ridesList').style.display = 'none';
