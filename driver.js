@@ -307,12 +307,17 @@ document.body.appendChild(toggleRidesBtn);
 // حدث الضغط لتبديل عرض/إخفاء قائمة الرحلات
 toggleRidesBtn.addEventListener("click", () => {
     const ridesList = document.getElementById("ridesList");
-    if(ridesList.style.display === "none") {
+// حدث الضغط لتبديل عرض/إخفاء قائمة الرحلات
+    const map = document.getElementById("map");  // افترض أن الخريطة لها ID يسمى "map"
+ if(ridesList.style.display === "none") {
         ridesList.style.display = "block";
+        map.style.display = "none";  // إخفاء الخريطة
     } else {
         ridesList.style.display = "none";
+        map.style.display = "block";  // إظهار الخريطة
     }
 });
+
 
     // دالة لتحويل الملف إلى base64
     function getBase64(file) {
