@@ -561,10 +561,7 @@ function getCurrentLocation() {
         }, (error) => {
             console.error("خطأ في الحصول على الموقع:", error);
             alert("يرجى تمكين موقعك الحالي لتتمكن من استخدام التطبيق.");
-        }, {
-            enableHighAccuracy: true,
-            maximumAge: 5000,
-            timeout: 200000
+  
         });
 }else {
         alert("Geolocation is not supported by this browser.");
