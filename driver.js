@@ -291,15 +291,15 @@ toggleRidesBtn.innerHTML = "✔ عرض الرحلات";
 // تنسيق موضع الزر (يمكنك تعديل الإحداثيات والتنسيقات حسب رغبتك)
 toggleRidesBtn.innerHTML = "✔ عرض الرحلات";
 toggleRidesBtn.style.position = "absolute";
-toggleRidesBtn.style.bottom = "50px";
-toggleRidesBtn.style.left = "50px";
+toggleRidesBtn.style.bottom = "10px";
+toggleRidesBtn.style.left = "10px";
 toggleRidesBtn.style.zIndex = "1000";
-toggleRidesBtn.style.padding = "20px";
+toggleRidesBtn.style.padding = "10px";
 toggleRidesBtn.style.background = "#4CAF50";
 toggleRidesBtn.style.color = "black";
 toggleRidesBtn.style.border = "none";
 toggleRidesBtn.style.cursor = "pointer";
-toggleRidesBtn.style.fontSize = "20px"; // زيادة حجم الخط
+toggleRidesBtn.style.fontSize = "10px"; // زيادة حجم الخط
 // تأكد من إزالة خاصية right إذا كانت موجودة
 
 document.body.appendChild(toggleRidesBtn);
