@@ -718,7 +718,9 @@ async function addRideToList(rideData, rideId, distanceToPickup, timeToPickup, d
     // إضافة حدث الضغط على زر "تأكيد الرحلة"
     document.getElementById(`confirmBtn-${rideId}`).onclick = (event) => {
 		toggleRidesBtn.style.display = "none"; // إخفاء الزر
-        const pickupCoords = {
+            document.getElementById('map').style.display = 'block';
+
+	    const pickupCoords = {
             latitude: parseFloat(event.target.getAttribute('data-pickup-lat')),
             longitude: parseFloat(event.target.getAttribute('data-pickup-lng'))
         };
@@ -844,6 +846,8 @@ update(rideRef, updateData)
 		
 		// عرض زر تأكيد الوصول
         document.getElementById('confirmArrival').style.display = 'block';
+	    document.getElementById('map').style.display = 'block';
+
         document.getElementById('confirmArrival').setAttribute('data-pickup-lat', pickupCoords.latitude);
         document.getElementById('confirmArrival').setAttribute('data-pickup-lng', pickupCoords.longitude);
         document.getElementById('confirmArrival').setAttribute('data-dropoff-lat', dropOffCoords.latitude);
