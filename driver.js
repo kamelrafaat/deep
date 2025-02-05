@@ -29,6 +29,7 @@ let currentRideId= null // أضف هذا مع المتغيرات الأخرى ف
 let cancelSound = new Audio('sounds/الغاء.mp3'); // تأكد من المسار الصحيح
 document.getElementById('startRide').style.display = 'none';
 document.getElementById('logoutBtn').style.display = 'none';
+document.getElementById('ridesList').style.display = 'block';
 
     // المتغيرات العامة
     let isEditing = false;
