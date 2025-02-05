@@ -316,7 +316,7 @@ toggleRidesBtn.addEventListener("click", () => {
         map.style.display = "none";  // إخفاء الخريطة عند عرض القائمة
         
         // تغيير الزر إلى علامة X لإغلاق القائمة
-        toggleRidesBtn.textContent = "× إغلاق القائمة";
+        toggleRidesBtn.textContent = "× إغلاق ";
         toggleRidesBtn.classList.add("close"); // إضافة التنسيق الخاص بالزر لإغلاق القائمة
   // نقل الزر إلى أعلى القائمة
         toggleRidesBtn.style.position = "fixed"; // اجعل الزر ثابتًا في الصفحة
