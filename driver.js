@@ -309,13 +309,36 @@ toggleRidesBtn.addEventListener("click", () => {
     const ridesList = document.getElementById("ridesList");
 // حدث الضغط لتبديل عرض/إخفاء قائمة الرحلات
     const map = document.getElementById("map");  // افترض أن الخريطة لها ID يسمى "map"
- if(ridesList.style.display === "none") {
+    // التبديل بين عرض/إخفاء القائمة
+    if (ridesList.style.display === "none" || ridesList.style.display === "") {
+        // إظهار القائمة وإخفاء الخريطة
         ridesList.style.display = "block";
-        map.style.display = "none";  // إخفاء الخريطة
-    } else {
+        map.style.display = "none";  // إخفاء الخريطة عند عرض القائمة
+        
+        // تغيير الزر إلى علامة X لإغلاق القائمة
+        toggleRidesBtn.textContent = "× إغلاق القائمة";
+        toggleRidesBtn.classList.add("close"); // إضافة التنسيق الخاص بالزر لإغلاق القائمة
+  // نقل الزر إلى أعلى القائمة
+        toggleRidesBtn.style.position = "fixed"; // اجعل الزر ثابتًا في الصفحة
+        toggleRidesBtn.style.top = "10px"; // حرك الزر لأعلى
+ toggleRidesBtn.style.left = "50%"; // تحديد مكان الزر ليكون في منتصف الصفحة
+        toggleRidesBtn.style.transform = "translateX(-50%)"; // لجعل الزر في المنتصف تمامًا	
+toggleRidesBtn.style.width = "150px";  // تحديد عرض الزر ليكون ثابت
+        toggleRidesBtn.style.height = "40px";  // تحديد ارتفاع الزر ليكون ثابت		
+   } else {
+        // إخفاء القائمة وإظهار الخريطة
         ridesList.style.display = "none";
-        map.style.display = "block";  // إظهار الخريطة
-    }
+        map.style.display = "block";  // إظهار الخريطة عند إخفاء القائمة
+          // تغيير الزر إلى "عرض الرحلات" مرة أخرى
+        toggleRidesBtn.textContent = "عرض الرحلات";
+        toggleRidesBtn.classList.remove("close"); // إزالة التنسيق الخاص بإغلاق القائمة
+        
+        // تغيير الزر إلى "عرض الرحلات" مرة أخرى
+        toggleRidesBtn.textContent = "عرض الرحلات";
+     	 toggleRidesBtn.classList.remove("close"); // إزالة التنسيق الخاص بإغلاق القائمة
+         toggleRidesBtn.style.position = "static"; // إعادة الزر إلى وضعه الطبيعي    
+	}
+	
 });
 
 
