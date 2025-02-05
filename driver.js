@@ -319,7 +319,7 @@ toggleRidesBtn.addEventListener("click", () => {
         toggleRidesBtn.textContent = "× إغلاق ";
         toggleRidesBtn.classList.add("close"); // إضافة التنسيق الخاص بالزر لإغلاق القائمة
   // نقل الزر إلى أعلى القائمة
-        toggleRidesBtn.style.position = "fixed"; // اجعل الزر ثابتًا في الصفحة
+        toggleRidesBtn.style.position = "absolute"; // اجعل الزر ثابتًا في الصفحة
         toggleRidesBtn.style.top = "10px"; // حرك الزر لأعلى
  toggleRidesBtn.style.left = "50%"; // تحديد مكان الزر ليكون في منتصف الصفحة
         toggleRidesBtn.style.transform = "translateX(-50%)"; // لجعل الزر في المنتصف تمامًا	
