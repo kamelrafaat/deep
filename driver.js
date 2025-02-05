@@ -564,7 +564,7 @@ function getCurrentLocation() {
         }, {
             enableHighAccuracy: true,
             maximumAge: 5000,
-            timeout: 10000
+            timeout: 200000
         });
 }else {
         alert("Geolocation is not supported by this browser.");
