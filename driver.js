@@ -290,7 +290,7 @@ const toggleRidesBtn = document.createElement("button");
 toggleRidesBtn.innerHTML = "✔ عرض الرحلات";
 // تنسيق موضع الزر (يمكنك تعديل الإحداثيات والتنسيقات حسب رغبتك)
 toggleRidesBtn.innerHTML = "✔ عرض الرحلات";
-toggleRidesBtn.style.position = "absolute";
+toggleRidesBtn.style.position = "fixed";
 toggleRidesBtn.style.bottom = "10px";
 toggleRidesBtn.style.left = "10px";
 toggleRidesBtn.style.zIndex = "1000";
