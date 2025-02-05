@@ -1,1 +1,17 @@
+/* تنسيق الزر الثابت في أعلى الصفحة */
+#toggleRidesBtn {
+    position: fixed; /* يثبت الزر في مكانه */
+    top: 10px; /* المسافة من أعلى الصفحة */
+    left: 50%; /* يحدد الزر ليكون في منتصف الصفحة عرضيًا */
+    transform: translateX(-50%); /* يضمن أن الزر يكون في المنتصف تمامًا */
+    width: 150px; /* عرض الزر */
+    height: 40px; /* ارتفاع الزر */
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    transition: top 0.3s ease; /* حركة للانتقال */
+    z-index: 1000; /* لضمان أن الزر يظهر فوق أي عنصر آخر */
+}
 
