@@ -28,7 +28,7 @@ let currentUserInfo; // لتخزين معلومات العميل
 let currentRideId= null // أضف هذا مع المتغيرات الأخرى في الأعلى
 let cancelSound = new Audio('sounds/الغاء.mp3'); // تأكد من المسار الصحيح
 let refreshInterval;
-const REFRESH_INTERVAL = 10000; // 10 ثواني
+const REFRESH_INTERVAL = 300000; // 10 ثواني
 let currentRidesData = null;
 document.getElementById('startRide').style.display = 'none';
 document.getElementById('logoutBtn').style.display = 'none';
@@ -556,9 +556,15 @@ function getCurrentLocation() {
             driverLatitude = position.coords.latitude;
             driverLongitude = position.coords.longitude;
             updateDriverLocation();
+               // إعادة معالجة الرحلات عند تغيير الموقع
+            if(currentRidesData) processRides(currentRidesData);
         }, (error) => {
             console.error("خطأ في الحصول على الموقع:", error);
             alert("يرجى تمكين موقعك الحالي لتتمكن من استخدام التطبيق.");
+        }, {
+            enableHighAccuracy: true,
+            maximumAge: 5000,
+            timeout: 10000
         });
 }else {
         alert("Geolocation is not supported by this browser.");
@@ -665,6 +671,10 @@ function parseCoordinates(locationString) {
     }
 }
 function calculateRouteAndDistance(pickupCoords, dropOffCoords, rideData, rideId) {
+	  if(!driverLatitude || !driverLongitude) {
+        console.log('انتظر جلب موقع السائق...');
+        return;
+    }
     const waypointsToPickup = [
         L.latLng(driverLatitude, driverLongitude),
         L.latLng(pickupCoords.latitude, pickupCoords.longitude)
