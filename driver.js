@@ -309,12 +309,14 @@ toggleRidesBtn.addEventListener("click", () => {
     const ridesList = document.getElementById("ridesList");
 // حدث الضغط لتبديل عرض/إخفاء قائمة الرحلات
     const map = document.getElementById("map");  // افترض أن الخريطة لها ID يسمى "map"
+     const profileBtn = document.getElementById("profileBtn");
+
     // التبديل بين عرض/إخفاء القائمة
     if (ridesList.style.display === "none" || ridesList.style.display === "") {
         // إظهار القائمة وإخفاء الخريطة
         ridesList.style.display = "block";
         map.style.display = "none";  // إخفاء الخريطة عند عرض القائمة
-        
+        profileBtn.style.display = "none";
         // تغيير الزر إلى علامة X لإغلاق القائمة
         toggleRidesBtn.textContent = "× إغلاق ";
         toggleRidesBtn.classList.add("close"); // إضافة التنسيق الخاص بالزر لإغلاق القائمة
@@ -329,7 +331,8 @@ toggleRidesBtn.style.width = "150px";  // تحديد عرض الزر ليكون 
         // إخفاء القائمة وإظهار الخريطة
         ridesList.style.display = "none";
         map.style.display = "block";  // إظهار الخريطة عند إخفاء القائمة
-          // تغيير الزر إلى "عرض الرحلات" مرة أخرى
+        profileBtn.style.display = "block";
+	    // تغيير الزر إلى "عرض الرحلات" مرة أخرى
         toggleRidesBtn.textContent = "عرض الرحلات";
         toggleRidesBtn.classList.remove("close"); // إزالة التنسيق الخاص بإغلاق القائمة
         
