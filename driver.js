@@ -27,6 +27,9 @@ let dropOffMarker;
 let currentUserInfo; // لتخزين معلومات العميل
 let currentRideId= null // أضف هذا مع المتغيرات الأخرى في الأعلى
 let cancelSound = new Audio('sounds/الغاء.mp3'); // تأكد من المسار الصحيح
+let refreshInterval;
+const REFRESH_INTERVAL = 10000; // 10 ثواني
+let currentRidesData = null;
 document.getElementById('startRide').style.display = 'none';
 document.getElementById('logoutBtn').style.display = 'none';
 document.getElementById('ridesList').style.display = 'block';
@@ -612,26 +615,38 @@ async function getLocationByIP() {
 }
 async function loadRides() {
     const ridesList = document.getElementById('ridesList');
-    ridesList.innerHTML = ''; 
-	    ridesList.style.display = 'none';
+    ridesList.innerHTML = '';
+    ridesList.style.display = 'none';
     
     const ridesRef = ref(database, 'rides');
-    onValue(ridesRef, async(snapshot) => {
-        snapshot.forEach(childSnapshot => {
-            const rideData = childSnapshot.val();
-            const rideId = childSnapshot.key;
- // تصفية الرحلات حسب الحالة
-            if (rideData.status !== 'new') {
-                return; // تخطي الرحلات غير المرغوبة
-            }
-            const pickupCoords = parseCoordinates(rideData.pickupLocation);
-            const dropOffCoords = parseCoordinates(rideData.dropOffLocation);
-            if (pickupCoords && dropOffCoords) {
-                calculateRouteAndDistance(pickupCoords, dropOffCoords, rideData, rideId);
-            } else {
-                console.warn(`نقطة الالتقاء أو نقطة الوصول غير صالحة للرحلة ${rideId}`);
-            }
-        });
+    onValue(ridesRef, (snapshot) => {
+        currentRidesData = snapshot.val();
+        processRides(currentRidesData);
+    });
+
+    // بدء التحديث الدوري
+    if(refreshInterval) clearInterval(refreshInterval);
+    refreshInterval = setInterval(() => {
+        if(currentRidesData) processRides(currentRidesData);
+    }, REFRESH_INTERVAL);
+}
+
+function processRides(ridesData) {
+    const ridesList = document.getElementById('ridesList');
+    ridesList.innerHTML = '';
+
+    if (!ridesData) return;
+
+    Object.keys(ridesData).forEach(rideId => {
+        const ride = ridesData[rideId];
+        if (ride.status !== 'new') return;
+
+        const pickupCoords = parseCoordinates(ride.pickupLocation);
+        const dropOffCoords = parseCoordinates(ride.dropOffLocation);
+        
+        if (pickupCoords && dropOffCoords) {
+            calculateRouteAndDistance(pickupCoords, dropOffCoords, ride, rideId);
+        }
     });
 }
 
