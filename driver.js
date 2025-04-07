@@ -27,12 +27,9 @@ let dropOffMarker;
 let currentUserInfo; // لتخزين معلومات العميل
 let currentRideId= null // أضف هذا مع المتغيرات الأخرى في الأعلى
 let cancelSound = new Audio('sounds/الغاء.mp3'); // تأكد من المسار الصحيح
-let refreshInterval;
-const REFRESH_INTERVAL = 300000; // 10 ثواني
-let currentRidesData = null;
 document.getElementById('startRide').style.display = 'none';
+document.getElementById('ridesList').style.display = 'none';
 document.getElementById('logoutBtn').style.display = 'none';
-document.getElementById('ridesList').style.display = 'block';
 
     // المتغيرات العامة
     let isEditing = false;
@@ -40,33 +37,7 @@ document.getElementById('ridesList').style.display = 'block';
     let selectedCarLicenseFile = null;
     let selectedIdCardFile = null;
     let selectedLicenseFile = null;
-    // إضافة في بداية المتغيرات
-let persistedState = JSON.parse(localStorage.getItem('driverState')) || {};
-
-// تحديث حالة التخزين عند أي تغيير
-function updatePersistedState(newState) {
-  persistedState = {...persistedState, ...newState};
-  localStorage.setItem('driverState', JSON.stringify(persistedState));
-}
-async function resumeInterruptedRide() {
-  const rideRef = ref(database, `rides/${currentRideId}`);
-  const snapshot = await get(rideRef);
-  
-  if(snapshot.exists()) {
-    const rideData = snapshot.val();
-    const pickupCoords = parseCoordinates(rideData.pickupLocation);
-    const dropOffCoords = parseCoordinates(rideData.dropOffLocation);
-    	  toggleRidesBtn.style.display = "none"; // إخفاء الزر
-
-    // إعادة إنشاء واجهة الرحلة
-    confirmRide(rideData, pickupCoords, dropOffCoords, currentRideId);
-  } else {
-    localStorage.removeItem('driverState');
-    loadRides();
-  }
-}
-	
-	
+    // حدث عرض البروفايل
 document.getElementById("logoutBtn").addEventListener("click", function() {
 
     // تحويل المستخدم إلى صفحة تسجيل الدخول
@@ -82,7 +53,7 @@ document.getElementById('profileBtn').addEventListener('click', () => {
   showDriverProfile();
 });
     async function showDriverProfile() {
-document.body.style.backgroundImage = "url('images.jpg')";
+document.body.style.backgroundImage = "url('image/images.jpg')";
       // إخفاء العناصر الأخرى
       document.getElementById('map').style.display = 'none';
       document.getElementById('ridesList').style.display = 'none';
@@ -294,15 +265,15 @@ toggleRidesBtn.innerHTML = "✔ عرض الرحلات";
 // تنسيق موضع الزر (يمكنك تعديل الإحداثيات والتنسيقات حسب رغبتك)
 toggleRidesBtn.innerHTML = "✔ عرض الرحلات";
 toggleRidesBtn.style.position = "absolute";
-toggleRidesBtn.style.bottom = "10px";
-toggleRidesBtn.style.left = "10px";
+toggleRidesBtn.style.bottom = "50px";
+toggleRidesBtn.style.left = "50px";
 toggleRidesBtn.style.zIndex = "1000";
-toggleRidesBtn.style.padding = "10px";
+toggleRidesBtn.style.padding = "20px";
 toggleRidesBtn.style.background = "#4CAF50";
 toggleRidesBtn.style.color = "black";
 toggleRidesBtn.style.border = "none";
 toggleRidesBtn.style.cursor = "pointer";
-toggleRidesBtn.style.fontSize = "10px"; // زيادة حجم الخط
+toggleRidesBtn.style.fontSize = "20px"; // زيادة حجم الخط
 // تأكد من إزالة خاصية right إذا كانت موجودة
 
 document.body.appendChild(toggleRidesBtn);
@@ -310,43 +281,12 @@ document.body.appendChild(toggleRidesBtn);
 // حدث الضغط لتبديل عرض/إخفاء قائمة الرحلات
 toggleRidesBtn.addEventListener("click", () => {
     const ridesList = document.getElementById("ridesList");
-// حدث الضغط لتبديل عرض/إخفاء قائمة الرحلات
-    const map = document.getElementById("map");  // افترض أن الخريطة لها ID يسمى "map"
-     const profileBtn = document.getElementById("profileBtn");
-
-    // التبديل بين عرض/إخفاء القائمة
-    if (ridesList.style.display === "none" || ridesList.style.display === "") {
-        // إظهار القائمة وإخفاء الخريطة
+    if(ridesList.style.display === "none") {
         ridesList.style.display = "block";
-        map.style.display = "none";  // إخفاء الخريطة عند عرض القائمة
-        profileBtn.style.display = "none";
-        // تغيير الزر إلى علامة X لإغلاق القائمة
-        toggleRidesBtn.textContent = "× إغلاق ";
-        toggleRidesBtn.classList.add("close"); // إضافة التنسيق الخاص بالزر لإغلاق القائمة
-  // نقل الزر إلى أعلى القائمة
-        toggleRidesBtn.style.position = "absolute"; // اجعل الزر ثابتًا في الصفحة
-        toggleRidesBtn.style.top = "10px"; // حرك الزر لأعلى
- toggleRidesBtn.style.left = "50%"; // تحديد مكان الزر ليكون في منتصف الصفحة
-        toggleRidesBtn.style.transform = "translateX(-50%)"; // لجعل الزر في المنتصف تمامًا	
-toggleRidesBtn.style.width = "150px";  // تحديد عرض الزر ليكون ثابت
-        toggleRidesBtn.style.height = "40px";  // تحديد ارتفاع الزر ليكون ثابت		
-   } else {
-        // إخفاء القائمة وإظهار الخريطة
+    } else {
         ridesList.style.display = "none";
-        map.style.display = "block";  // إظهار الخريطة عند إخفاء القائمة
-        profileBtn.style.display = "block";
-	    // تغيير الزر إلى "عرض الرحلات" مرة أخرى
-        toggleRidesBtn.textContent = "عرض الرحلات";
-        toggleRidesBtn.classList.remove("close"); // إزالة التنسيق الخاص بإغلاق القائمة
-        
-        // تغيير الزر إلى "عرض الرحلات" مرة أخرى
-        toggleRidesBtn.textContent = "عرض الرحلات";
-     	 toggleRidesBtn.classList.remove("close"); // إزالة التنسيق الخاص بإغلاق القائمة
-         toggleRidesBtn.style.position = "static"; // إعادة الزر إلى وضعه الطبيعي    
-	}
-	
+    }
 });
-
 
     // دالة لتحويل الملف إلى base64
     function getBase64(file) {
@@ -474,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (ride.status === 'canceled' && ride.driverId === driverId) {
                     alert('لقد تم إلغاء الرحلة من قبل العميل!');
                     const rideRef = ref(database, `rides/${rideId}`);
-                       playStatusSound('الغاء.mp3');
+                       playStatusSound('sounds/بدء.mp3');
                         console.error("تعذر تشغيل الصوت:", error);
                     };   
  setTimeout(() => {
@@ -526,17 +466,12 @@ onAuthStateChanged(auth, (user) => {
         loadDriverData(); 
         initializeMap();
         getCurrentLocation();
-   // استعادة الحالة السابقة
-    if(persistedState.currentRideId) {
-      currentRideId = persistedState.currentRideId;
-      resumeInterruptedRide();
+                loadRides();
     } else {
-      loadRides();
+        alert('لا يوجد مستخدم مسجل الدخول');
     }
-  } else {
-    alert('لا يوجد مستخدم مسجل الدخول');
-  }
 });
+// إضافة دالة جديدة لتحميل بيانات السائق
 async function loadDriverData() {
     const driverRef = ref(database, `drives/${driverId}`);
     const snapshot = await get(driverRef);
@@ -556,12 +491,9 @@ function getCurrentLocation() {
             driverLatitude = position.coords.latitude;
             driverLongitude = position.coords.longitude;
             updateDriverLocation();
-               // إعادة معالجة الرحلات عند تغيير الموقع
-            if(currentRidesData) processRides(currentRidesData);
         }, (error) => {
             console.error("خطأ في الحصول على الموقع:", error);
             alert("يرجى تمكين موقعك الحالي لتتمكن من استخدام التطبيق.");
-  
         });
 }else {
         alert("Geolocation is not supported by this browser.");
@@ -618,38 +550,26 @@ async function getLocationByIP() {
 }
 async function loadRides() {
     const ridesList = document.getElementById('ridesList');
-    ridesList.innerHTML = '';
-    ridesList.style.display = 'none';
+    ridesList.innerHTML = ''; 
+	    ridesList.style.display = 'none';
     
     const ridesRef = ref(database, 'rides');
-    onValue(ridesRef, (snapshot) => {
-        currentRidesData = snapshot.val();
-        processRides(currentRidesData);
-    });
-
-    // بدء التحديث الدوري
-    if(refreshInterval) clearInterval(refreshInterval);
-    refreshInterval = setInterval(() => {
-        if(currentRidesData) processRides(currentRidesData);
-    }, REFRESH_INTERVAL);
-}
-
-function processRides(ridesData) {
-    const ridesList = document.getElementById('ridesList');
-    ridesList.innerHTML = '';
-
-    if (!ridesData) return;
-
-    Object.keys(ridesData).forEach(rideId => {
-        const ride = ridesData[rideId];
-        if (ride.status !== 'new') return;
-
-        const pickupCoords = parseCoordinates(ride.pickupLocation);
-        const dropOffCoords = parseCoordinates(ride.dropOffLocation);
-        
-        if (pickupCoords && dropOffCoords) {
-            calculateRouteAndDistance(pickupCoords, dropOffCoords, ride, rideId);
-        }
+    onValue(ridesRef, async(snapshot) => {
+        snapshot.forEach(childSnapshot => {
+            const rideData = childSnapshot.val();
+            const rideId = childSnapshot.key;
+ // تصفية الرحلات حسب الحالة
+            if (rideData.status !== 'new') {
+                return; // تخطي الرحلات غير المرغوبة
+            }
+            const pickupCoords = parseCoordinates(rideData.pickupLocation);
+            const dropOffCoords = parseCoordinates(rideData.dropOffLocation);
+            if (pickupCoords && dropOffCoords) {
+                calculateRouteAndDistance(pickupCoords, dropOffCoords, rideData, rideId);
+            } else {
+                console.warn(`نقطة الالتقاء أو نقطة الوصول غير صالحة للرحلة ${rideId}`);
+            }
+        });
     });
 }
 
@@ -668,10 +588,6 @@ function parseCoordinates(locationString) {
     }
 }
 function calculateRouteAndDistance(pickupCoords, dropOffCoords, rideData, rideId) {
-	  if(!driverLatitude || !driverLongitude) {
-        console.log('انتظر جلب موقع السائق...');
-        return;
-    }
     const waypointsToPickup = [
         L.latLng(driverLatitude, driverLongitude),
         L.latLng(pickupCoords.latitude, pickupCoords.longitude)
@@ -743,9 +659,7 @@ async function addRideToList(rideData, rideId, distanceToPickup, timeToPickup, d
     // إضافة حدث الضغط على زر "تأكيد الرحلة"
     document.getElementById(`confirmBtn-${rideId}`).onclick = (event) => {
 		toggleRidesBtn.style.display = "none"; // إخفاء الزر
-            document.getElementById('map').style.display = 'block';
-
-	    const pickupCoords = {
+        const pickupCoords = {
             latitude: parseFloat(event.target.getAttribute('data-pickup-lat')),
             longitude: parseFloat(event.target.getAttribute('data-pickup-lng'))
         };
@@ -759,8 +673,7 @@ async function addRideToList(rideData, rideId, distanceToPickup, timeToPickup, d
 function confirmRide(rideData, pickupCoords, dropOffCoords, rideId) {
     currentRideCost = rideData.cost; // تخزين تكلفة الرحلة الحالية
 	currentRideId = rideId; // <-- تعيين المعرف هنا أيضاً
-    updatePersistedState({currentRideId}); // حفظ الحالة
-	const userId = rideData.userId; 
+    const userId = rideData.userId; 
     const userRef = ref(database, 'users/' + userId); 
 
     onValue(userRef, (snapshot) => {
@@ -804,7 +717,6 @@ update(rideRef, updateData)
     const rideStatusRef = ref(database, `rides/${rideId}/status`);
     onValue(rideStatusRef, (snapshot) => {
         if (snapshot.val() === 'canceled') {
-			  localStorage.removeItem('driverState'); // إضافة هذا السطر
 			// تشغيل الصوت
             cancelSound.play().catch(error => {
                 console.error("تعذر تشغيل الصوت:", error);
@@ -871,8 +783,6 @@ update(rideRef, updateData)
 		
 		// عرض زر تأكيد الوصول
         document.getElementById('confirmArrival').style.display = 'block';
-	    document.getElementById('map').style.display = 'block';
-
         document.getElementById('confirmArrival').setAttribute('data-pickup-lat', pickupCoords.latitude);
         document.getElementById('confirmArrival').setAttribute('data-pickup-lng', pickupCoords.longitude);
         document.getElementById('confirmArrival').setAttribute('data-dropoff-lat', dropOffCoords.latitude);
@@ -935,7 +845,6 @@ window.collectPayment = function() {
     // 1. تحديث الحالة فقط إلى "تم" دون نقل الرحلة
     const rideRef = ref(database, `rides/${currentRideId}`);
     update(rideRef, { status: 'end' })
-	
         .then(() => {    
         
     // إخفاء الخريطة وجميع العناصر
@@ -960,8 +869,9 @@ window.collectPayment = function() {
                location.reload(); // إعادة التحميل المباشرة
             };
         })
-        .then(() => {
-           localStorage.removeItem('driverState'); // مسح الحالة المحفوظة            
+        .catch((error) => {
+            alert("حدث خطأ أثناء تحديث الحالة!");
+            console.error(error);
         });
 };
 window.confirmArrival = function() {
@@ -1025,7 +935,6 @@ window.startRide = function() {
     const rideRef = ref(database, `rides/${currentRideId}`);
     update(rideRef, { status: 'redy' })
         .then(() => {
-			
 			toggleRidesBtn.style.display = "none"; // إخفاء الزر
             // 3. إخفاء زر البدء وإظهار زر التحصيل
             document.getElementById('startRide').style.display = 'none';
